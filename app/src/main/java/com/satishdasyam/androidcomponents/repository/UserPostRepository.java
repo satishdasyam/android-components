@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UserPostRepository {
 
-    private static UserPostRepository mUserPostRepository;
+    private volatile static UserPostRepository mUserPostRepository;
     private ApiService mRetrofitService;
 
     public UserPostRepository() {
@@ -26,10 +26,12 @@ public class UserPostRepository {
     }
 
 
-    public synchronized static UserPostRepository getInstance() {
+    public static UserPostRepository getInstance() {
         if (mUserPostRepository == null) {
-            if (mUserPostRepository == null) {
-                mUserPostRepository = new UserPostRepository();
+            synchronized (UserPostRepository.class) {
+                if (mUserPostRepository == null) {
+                    mUserPostRepository = new UserPostRepository();
+                }
             }
         }
         return mUserPostRepository;
